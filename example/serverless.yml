@@ -3,7 +3,7 @@ service: multi-region-lambda function
 frameworkVersion: '2'
 
 plugins:
-  - serverless-multiregion-plugin
+  - serverless-high-availibity-multi-region
 
 custom:
   dns:

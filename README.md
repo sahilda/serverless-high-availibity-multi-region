@@ -1,4 +1,4 @@
-# serverless-multiregion-plugin
+# serverless-high-availibity-multi-region Plugin
 
 This is plugin is inspired by <https://github.com/DanteInc/serverless-multi-regional-plugin> which sets up the Cloudformation template to create
 all of the necessary resources for multiregion.
@@ -7,6 +7,7 @@ Importantly, it differs from the above in that it removes the CloudFront cdn as 
 when not necessary.
 
 ![Diagram of resources and setup](diagram.png)
+
 ## Usage
 
 In order to use this, the following properties need to be added to `serverless.yml`. This means a couple things need to be present before this can be used:
@@ -17,7 +18,7 @@ In order to use this, the following properties need to be added to `serverless.y
 
 ```{yml}
 plugins:
-  - serverless-multiregion-plugin
+  - serverless-high-availibity-multi-region
 
 custom:
   dns:
