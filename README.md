@@ -6,6 +6,9 @@ all of the necessary resources for multiregion.
 Importantly, it differs from the above in that it removes the CloudFront cdn as that's not necessary for a high-availability serverless deployment. That saves both complexity and costs
 when not necessary.
 
+![Diagram of resources and setup](diagram.png)
+## Usage
+
 In order to use this, the following properties need to be added to `serverless.yml`. This means a couple things need to be present before this can be used:
 
 1. A hosted zone needs to be created in Route 53.
@@ -28,3 +31,16 @@ custom:
       acmCertificateArn: << acm certificate for defined the domain name >>
       failover: SECONDARY
 ```
+
+## Deployment
+
+With the `serverless.yml` updated, we are ready to deploy onto two regions. We can run the following:
+
+```{bash}
+serverless deploy --region us-west-1 --stage development
+serverless deploy --region us-east-1 --stage development
+```
+
+## Example
+
+For a full example with a lambda function, look at the /examples directory.
