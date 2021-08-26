@@ -5,5 +5,9 @@
   "main": "index.js",
   "repository": "git@github.com:sahilda/serverless-multiregion-plugin.git",
   "author": "Sahil Agarwal <sahildagarwal@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^3.10.0",
+    "lodash": "^4.17.21"
+  }
 }
