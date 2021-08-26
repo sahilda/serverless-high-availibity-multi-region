@@ -1,0 +1,69 @@
+---
+Resources:
+  ApiRegionalDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: ${self:custom.dns.domainName}
+      RegionalCertificateArn: ${self:custom.dns.${opt:region}.acmCertificateArn}
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+  ApiRegionalBasePathMapping:
+    DependsOn:
+      - ApiGatewayDeployment${sls:instanceId}
+      - ApiRegionalDomainName
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      # BasePath: !Ref basePath
+      DomainName:
+        Ref: ApiRegionalDomainName
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      Stage: ${opt:stage}
+  ApiRegionalHealthCheck:
+    Type: AWS::Route53::HealthCheck
+    Properties:
+      HealthCheckConfig:
+        Type: HTTPS
+        ResourcePath: /${opt:stage}/${self:custom.dns.healthCheckResourcePath}
+        FullyQualifiedDomainName:
+          Fn::Join:
+            - ''
+            - - Ref: ApiGatewayRestApi
+              - '.execute-api.'
+              - Ref: AWS::Region
+              - '.amazonaws.com'
+        RequestInterval: 30
+        FailureThreshold: 3
+  ApiRegionalEndpointRecord:
+    DependsOn:
+      - ApiRegionalDomainName
+      - ApiRegionalHealthCheck
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: ${self:custom.dns.hostedZoneId}
+      Name:
+        Fn::Join:
+          - ""
+          - - Ref: ApiRegionalDomainName
+            - .
+      SetIdentifier: ${opt:region}
+      HealthCheckId:
+        Ref: ApiRegionalHealthCheck
+      Type: A
+      AliasTarget:
+        HostedZoneId:
+          Fn::GetAtt:
+            - ApiRegionalDomainName
+            - RegionalHostedZoneId
+        DNSName:
+          Fn::GetAtt:
+            - ApiRegionalDomainName
+            - RegionalDomainName
+Outputs:
+  RegionalEndpoint:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: ApiRegionalDomainName
